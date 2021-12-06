@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2019",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "incremental": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@adminis/*": ["src/modules/adminis/*"],
+      "@classe/*": ["src/modules/classe/*"],
+      "@comment-post/*": ["src/modules/comment-post/*"],
+      "@comment-question/*": ["src/modules/comment-question/*"],
+      "@home-modules/*": ["src/modules/home/*"],
+      "@post/*": ["src/modules/post/*"],
+      "@question/*": ["src/modules/question/*"],
+      "@tag-post/*": ["src/modules/tag-post/*"],
+      "@tag-question/*": ["src/modules/tag-question/*"],
+      "@topic/*": ["src/modules/topic/*"],
+      "@trainee/*": ["src/modules/trainee/*"],
+      "@trainer/*": ["src/modules/trainer/*"],
+      "@user/*": ["src/modules/user/*"],
+      "@lesson/*": ["src/modules/lesson/*"],
+      "@tag-predict/*": ["src/modules/tag-predict/*"],
+      "@search/*": ["src/modules/search/*"],
+      "@recommender/*": ["src/modules/recommender/*"]
+    }
+  },
+  "exclude": ["src/node_modules", "dist", "*.js"],
+  "types": ["node"]
+}
