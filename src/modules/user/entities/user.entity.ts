@@ -1,5 +1,6 @@
 import { AppRoles } from '@/app.roles';
 import { jwtExpiresIn, jwtSecretKey } from '@/config';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { PostEntity } from '@post/entities';
 import { QuestionEntity } from '@question/entities';
 import { IUserModel, JwtUser, UserRO } from '@user/dto';
@@ -117,7 +118,14 @@ export class UserEntity implements IUserModel {
     }
 
     async comparePassword(attempt: string): Promise<boolean> {
-        return await bcrypt.compare(attempt, this.password);
+        try {
+            return await bcrypt.compare(attempt, this.password);
+        } catch (err) {
+            throw new HttpException(
+                err || 'OOPS!',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 
     private get token() {

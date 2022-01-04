@@ -28,6 +28,7 @@ import {
 import { UserEntity } from '@user/entities';
 import { UserRepository } from '@user/repositories';
 import * as pwGenerator from 'generate-password';
+import * as bcrypt from 'bcryptjs';
 import { gql } from 'graphql-request';
 import { InjectRolesBuilder, RolesBuilder } from 'nest-access-control';
 import { paginate } from 'nestjs-typeorm-paginate';
@@ -188,18 +189,33 @@ export class UserService {
             const foundUser = await this.userRepository.findOne({ id });
 
             if (foundUser) {
-                // Object.keys(updateUser).forEach(key => {
-                //     if (key === 'password' && updateUser['password']) {
-                //         foundUser.password = updateUser.password;
-                //     } else
-                //         foundUser[key] = updateUser[key];
-                // });
 
                 try {
-                    await this.userRepository.update(foundUser.id, updateUser);
-                } catch ({ detail }) {
+                    Object.keys(updateUser).forEach(async key => {
+                        if (key === 'password' && updateUser['password']) {
+                            if (await foundUser.comparePassword(updateUser.oldPassword)) {
+                                const passwordTmp = await bcrypt.hash(updateUser.password, 10).then(async res => {
+                                    delete updateUser["oldPassword"]
+                                    updateUser.password = res;
+                                    try {
+                                        await this.userRepository.update(foundUser.id, updateUser);
+                                    } catch (err) {
+                                        throw new HttpException(
+                                            err || 'OOPS!',
+                                            HttpStatus.INTERNAL_SERVER_ERROR,
+                                        );
+                                    }
+                                });
+                            } else {
+                                throw new HttpException('Password is not correct', HttpStatus.INTERNAL_SERVER_ERROR);
+                            }
+                        } else
+                            foundUser[key] = updateUser[key];
+                    });
+                    if (!await foundUser.comparePassword(updateUser.oldPassword)) await this.userRepository.update(foundUser.id, updateUser);
+                } catch (err) {
                     throw new HttpException(
-                        detail || 'OOPS!',
+                        err || 'OOPS!',
                         HttpStatus.INTERNAL_SERVER_ERROR,
                     );
                 }
