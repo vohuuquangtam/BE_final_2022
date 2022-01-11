@@ -193,26 +193,32 @@ export class UserService {
                 try {
                     Object.keys(updateUser).forEach(async key => {
                         if (key === 'password' && updateUser['password']) {
-                            if (await foundUser.comparePassword(updateUser.oldPassword)) {
-                                const passwordTmp = await bcrypt.hash(updateUser.password, 10).then(async res => {
-                                    delete updateUser["oldPassword"]
-                                    updateUser.password = res;
-                                    try {
-                                        await this.userRepository.update(foundUser.id, updateUser);
-                                    } catch (err) {
-                                        throw new HttpException(
-                                            err || 'OOPS!',
-                                            HttpStatus.INTERNAL_SERVER_ERROR,
-                                        );
-                                    }
-                                });
-                            } else {
+                            try {
+                                if (await foundUser.comparePassword(updateUser.oldPassword)) {
+                                    const passwordTmp = await bcrypt.hash(updateUser.password, 10).then(async res => {
+                                        delete updateUser["oldPassword"]
+                                        updateUser.password = res;
+                                        try {
+                                            await this.userRepository.update(foundUser.id, updateUser);
+                                        } catch (err) {
+                                            throw new HttpException(
+                                                err || 'OOPS!',
+                                                HttpStatus.INTERNAL_SERVER_ERROR,
+                                            );
+                                        }
+                                    });
+                                }
+                            } catch (err) {
                                 throw new HttpException('Password is not correct', HttpStatus.INTERNAL_SERVER_ERROR);
                             }
                         } else
                             foundUser[key] = updateUser[key];
                     });
-                    if (!await foundUser.comparePassword(updateUser.oldPassword)) await this.userRepository.update(foundUser.id, updateUser);
+                    if (!await foundUser.comparePassword(updateUser.oldPassword)) {
+                        delete updateUser["oldPassword"]
+                        delete updateUser["password"]
+                        await this.userRepository.update(foundUser.id, updateUser);
+                    }
                 } catch (err) {
                     throw new HttpException(
                         err || 'OOPS!',
