@@ -214,7 +214,7 @@ export class UserService {
                         } else
                             foundUser[key] = updateUser[key];
                     });
-                    if (!await foundUser.comparePassword(updateUser.oldPassword)) {
+                    if (!updateUser.password) {
                         delete updateUser["oldPassword"]
                         delete updateUser["password"]
                         await this.userRepository.update(foundUser.id, updateUser);
