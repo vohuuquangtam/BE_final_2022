@@ -24,7 +24,7 @@ import { AutomapperModule } from 'nestjsx-automapper';
 import { AppController } from './app.controller';
 import { roles } from './app.roles';
 import { mailerConfig } from './config';
-
+import { UploadModule } from './modules/upload/upload.module';
 @Module({
     imports: [
         AutomapperModule.withMapper(),
@@ -52,6 +52,7 @@ import { mailerConfig } from './config';
         TagPredictModule,
         SearchModule,
         RecommenderModule,
+        UploadModule
     ],
     controllers: [AppController],
     providers: [],
