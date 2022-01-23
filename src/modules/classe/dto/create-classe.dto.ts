@@ -44,6 +44,11 @@ export class CreateClasseDTO implements ICreateClasseDTO {
 
     @ApiProperty()
     @IsOptional()
+    @IsUrl()
+    featuredvideo: string;
+
+    @ApiProperty()
+    @IsOptional()
     @IsInt()
     duration: number;
 

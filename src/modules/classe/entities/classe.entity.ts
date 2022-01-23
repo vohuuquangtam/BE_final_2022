@@ -31,6 +31,9 @@ export class ClasseEntity extends BaseEntity implements IClasseModel {
     @Column({ type: 'text', nullable: false })
     featuredImage: string;
 
+    @Column({ type: 'text', nullable: true })
+    featuredvideo: string;
+    
     @Column({ type: 'timestamptz', nullable: false, default: new Date() })
     startTime: Date;
 

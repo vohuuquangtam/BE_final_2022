@@ -15,6 +15,7 @@ export class ClasseRO implements IClasseRO {
     name: string;
     description: string;
     featuredImage: string;
+    featuredvideo: string;
     startTime: Date;
     endTime?: Date;
     duration: number;
