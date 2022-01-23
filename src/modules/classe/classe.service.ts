@@ -139,6 +139,45 @@ export class ClasseService extends BaseService<ClasseEntity, ClasseRepository> {
             );
     }
 
+    async modifyClasse(
+        id: string,
+        updater: CreateClasseDTO,
+        jwtUser: JwtUser,
+    ): Promise<IClasseRO> {
+        const classe = await this.getClasseById(id, jwtUser);
+        if (!classe)
+            throw new HttpException(
+                `Class with id: ${id} not found`,
+                HttpStatus.NOT_FOUND,
+            );
+            const permission = grantPermission(
+                this.rolesBuilder,
+                AppResources.TOPIC,
+                'update',
+                jwtUser,
+                classe.trainer.user.id,
+            );
+            if (permission.granted) {
+                try {
+                    updater = permission.filter(updater);
+                    Object.assign(classe, updater);
+                    await this.classeRepository.save(classe);
+                    const result = await this.classeRepository.getClasseById(id);
+                    return permission.filter(result);
+                } catch ({ detail, message }) {
+                    throw new HttpException(
+                        detail || `OOPS! Can't update topic`,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                    );
+                }
+            } else
+                throw new HttpException(
+                    `You don't have permission for this!`,
+                    HttpStatus.FORBIDDEN,
+                );
+        return
+    }
+
     async registerClasse(
         id: string,
         jwtUser: JwtUser,

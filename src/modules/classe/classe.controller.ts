@@ -3,7 +3,7 @@ import { FindOneParams, IPagination, PaginateParams } from '@/shared';
 import { Auth } from '@/shared/auth';
 import { ClasseService } from '@classe/classe.service';
 import { CreateClasseDTO, IClasseRO } from '@classe/dto';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtUser } from '@user/dto';
 import { User } from '@user/user.decorator';
@@ -32,6 +32,16 @@ export class ClasseController {
         @User() jwtUser: JwtUser,
     ): Promise<IClasseRO> {
         return this.classeService.createClasse(data, jwtUser);
+    }
+
+    @Auth()
+    @Patch('classe/:id')
+    modifyClasse(
+        @Param() { id }: FindOneParams,
+        @Body() data: CreateClasseDTO,
+        @User() jwtUser: JwtUser,
+    ): Promise<IClasseRO> {
+        return this.classeService.modifyClasse(id, data, jwtUser);
     }
 
     @Auth()
