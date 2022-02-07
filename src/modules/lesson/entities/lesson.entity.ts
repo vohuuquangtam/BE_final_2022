@@ -33,6 +33,9 @@ export class LessonEntity extends BaseEntity implements ILessonModel {
     @Column({ type: 'text', nullable: false, default: 'lesson' })
     type: string;
 
+    @Column({ type: 'text', nullable: true })
+    featuredvideo: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

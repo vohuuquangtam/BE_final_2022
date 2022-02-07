@@ -30,4 +30,7 @@ export class LessonRO implements ILessonRO {
 
     @ApiProperty()
     updatedAt: Date;
+
+    @ApiProperty()
+    featuredvideo: string;
 }
